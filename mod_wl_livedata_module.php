@@ -15,6 +15,7 @@ require_once __DIR__ . '/helper.php';   // Helper
 JHTML::_('script', 'mod_wl_livedata_module/scripts.js', array('version' => 'auto', 'relative' => true));
 
 $allusers = ModWL_Livedata_Module_Helper::getUsers();
+$count = ModWL_Livedata_Module_Helper::getOnlineCount();
 
 
 	// Check for a custom CSS file

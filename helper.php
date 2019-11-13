@@ -37,6 +37,67 @@ class ModWL_LIVEDATA_Module_Helper
         // using the data
         $countData = count($column);
     }
+
+    
+    /**
+     * Show online count
+     *
+     * @return  array  The number of Users and Guests online.
+     *
+     * @since   1.5
+     **/
+    
+    
+     public static function getOnlineCount()
+    {
+        $db = JFactory::getDbo();
+
+        // Calculate number of guests and users
+        $result	     = array();
+        $user_array  = 0;
+        $guest_array = 0;
+
+        $whereCondition = JFactory::getConfig()->get('shared_session', '0') ? 'IS NULL' : '= 0';
+
+        $query = $db->getQuery(true)
+            ->select('guest, client_id')
+            ->from('#__session')
+            ->where('client_id ' . $whereCondition);
+        $db->setQuery($query);
+
+        try
+        {
+            $sessions = (array) $db->loadObjectList();
+        }
+        catch (RuntimeException $e)
+        {
+            $sessions = array();
+        }
+
+        if (count($sessions))
+        {
+            foreach ($sessions as $session)
+            {
+                // If guest increase guest count by 1
+                if ($session->guest == 1)
+                {
+                    $guest_array ++;
+                }
+
+                // If member increase member count by 1
+                if ($session->guest == 0)
+                {
+                    $user_array ++;
+                }
+            }
+        }
+
+        $result['user']  = $user_array;
+        $result['guest'] = $guest_array;
+
+        $totalNumber = $result['user']  = $user_array + $result['guest'] = $guest_array;
+        echo $totalNumber;
+    }
     
 
 }
