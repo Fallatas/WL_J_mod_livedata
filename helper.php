@@ -18,6 +18,25 @@ defined('_JEXEC') or die;
 class ModWL_LIVEDATA_Module_Helper
 {   
     
+    // Detects Users
+    public function getUsers()
+    {
+
+        // Get a db connection.
+        $db = JFactory::getDbo();
+
+        //Create Query
+        $query = $db
+            ->getQuery(true)
+            ->select("name")
+            ->from($db->quoteName('#__users'));
+
+        $db->setQuery($query);
+        $column = $db->loadColumn ();
+
+        // using the data
+        $countData = count($column);
+    }
     
 
 }
