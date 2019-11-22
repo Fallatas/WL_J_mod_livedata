@@ -15,9 +15,9 @@ defined('_JEXEC') or die;
  *
  * @since  Version 1.0.0.0
  */
-class ModWL_LIVEDATA_Module_Helper
+class ModWL_Livedata_Module_Helper
 {   
-    
+
     // Detects Users
     public function getUsers()
     {
@@ -36,19 +36,23 @@ class ModWL_LIVEDATA_Module_Helper
 
         // using the data
         $countData = count($column);
+        return $countData;
     }
 
-    
+
     /**
      * Show online count
      *
      * @return  array  The number of Users and Guests online.
      *
+     * Adapted from Joomla mod_whosonline
+     * @copyright   Copyright (C) 2005 - 2019 Open Source Matters, Inc. All rights reserved.
+     * @license     GNU General Public License version 2 or later; see LICENSE.txt
+     *
      * @since   1.5
      **/
-    
-    
-     public static function getOnlineCount()
+
+    public static function getOnlineCount()
     {
         $db = JFactory::getDbo();
 
@@ -96,8 +100,168 @@ class ModWL_LIVEDATA_Module_Helper
         $result['guest'] = $guest_array;
 
         $totalNumber = $result['user']  = $user_array + $result['guest'] = $guest_array;
-        echo $totalNumber;
+        return $totalNumber;
     }
+
+
+
+
+    // detects Articles
+    public function getArticles()
+    {
+
+        // Get a db connection.
+        $db = JFactory::getDbo();
+
+        //Create Query
+        $query = $db
+            ->getQuery(true)
+            ->select("title")
+            ->from($db->quoteName('#__content'));
+
+        $db->setQuery($query);
+        $column = $db->loadColumn ();
+
+        // using the data
+        $countArticles = count($column);
+
+        return $countArticles;
+
+    }
+
+    public function saveData(){
+
+    }
+
+
+    public function getLivedataParams ($params)
+    {
+        /// Add Module Parameter
+        jimport( 'joomla.application.module.helper' );
+        $module = JModuleHelper::getModule('wl_typed_module');
+        $module_id = $module->id;
+        $db = JFactory::getDbo();
+        $query = $db->getQuery(true);
+        $query->select('params')
+            ->from($db->quoteName('#__modules'))
+            ->where('id = ' . $db->quote($module_id));
+        $db->setQuery($query);
+        $moduleparams = (json_decode($db->loadResult()));
+        return $moduleparams;
+    }
+
+    // Create Chart.js Object
+    public function chartJs($count)
+    {
+
+        // Add JS Parameter
+        JFactory::getDocument()->addScriptDeclaration("jQuery(document).ready(function () {  
+                
+              
+              var myChartObject = document.getElementById('myChart');
+
+              var chartData = {
+
+                type: `bar`,
+        data: {
+        labels: [],
+        datasets: [
+            {
+                label: \"Online\",
+                backgroundColor: `rgba(255, 110, 72, 1)`,
+                data: []
+            }
+        ]
+    },
+    options: {
+        title: {
+            display: true,
+            text: 'Online Nutzer der letzten 20 Sekunden',
+            position: 'top',
+            fontSize: 20
+        },
+        animation: {
+            duration: 0
+        },
+        legend: {
+            display: false
+        },
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true,
+                    userCallback: function (label, index, labels) {
+                        if (Math.floor(label) === label) {
+                            return label;
+                        }
+
+                    },
+                }
+            }]
+        }
+    }
+
+
+    };
+
+var onlineCount = $count;
+var dataCount = 20;
+
+var liveData = {
+    online: [],
+    time: []
+};
+
+for (var i = 0; i < dataCount; i++){
+    liveData.online.push('');
+    liveData.time.push('');
+}
+
+function onlineUserEmit(){
+
+    var date = new Date();
+    var hours = date.getHours();
+    var minutes = date.getMinutes();
+    var seconds = date.getSeconds();
     
+    var totalTime = hours + ':' + minutes + ':' + seconds;
+
+    if (liveData.time.length >= dataCount) {
+        liveData.time.shift();
+    }
+
+    if (liveData.online.length >= dataCount) {
+        liveData.online.shift();
+    }
+
+    liveData.online.push(onlineCount);
+    liveData.time.push(totalTime);
+    
+
+}
+
+var chart = new Chart(myChartObject, chartData);
+
+chart.data.labels = liveData.time;
+chart.data.datasets[0].data = liveData.online;
+
+
+onlineUserEmit();
+
+setInterval(function () {
+    onlineUserEmit();
+    chart.update();
+},1000);
+
+   
+        });");
+
+    }
+
+    public function getStyleParams()
+    {
+
+    }
+
 
 }

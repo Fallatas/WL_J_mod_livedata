@@ -14,7 +14,58 @@
         <filename>helper.php</filename>
         <folder>tmpl</folder>
     </files>
-   
+
+    <config>
+        <fields name="params">
+            <fieldset name="basic">
+
+                <field name="type" type="list" default="bar" required="true" label="MOD_WL_LIVEDATA_MODULE_TYPE_LABEL" description="MOD_WL_LIVEDATA_MODULE_TYPE_DESC">
+                    <option value="bar">MOD_WL_LIVEDATA_MODULE_TYPE_TEXT</option>
+                    <option value="line">Line</option>
+                    <option value="bar">Bar</option>
+                    <option value="radar">Radar</option>
+                    <option value="pie">Pie</option>
+                    <option value="polarArea">Polararea</option>
+                </field>
+
+                <field
+                        name="headline"
+                        type="text"
+                        default="Nutzer der letzten 20 Sekunden."
+                        label="MOD_WL_LIVEDATA_MODULE_HEADLINE_LABEL"
+                        description="MOD_WL_LIVEDATA_MODULE_HEADLINE_DESC"
+                        size="10"
+                />
+
+                <field name="headlinetextcolor"
+                       type="color"
+                       default="#0a0a0a"
+                       format="rgba"
+                       label="MOD_WL_LIVEDATA_MODULE_HEADLINE_COLOR_LABEL"
+                       description="MOD_WL_LIVEDATA_MODULE_HEADLINE_COLOR_DESC"
+                />
+
+                <field
+                        name="labeltext"
+                        type="text"
+                        default="Some text"
+                        label="MOD_WL_LIVEDATA_MODULE_DATALABEL1_LABEL"
+                        description="MOD_WL_LIVEDATA_MODULE_DATALABEL1_DESC"
+                        size="10"
+                />
+
+                <field name="labeltextcolor"
+                       type="color"
+                       default="#0a0a0a"
+                       format="rgba"
+                       label="MOD_WL_LIVEDATA_MODULE_LABEL_COLOR_LABEL"
+                       description="MOD_WL_LIVEDATA_MODULE_LABEL_COLOR_DESC"
+                />
+                
+            </fieldset>
+        </fields>
+    </config>
+
     <languages folder="language">
         <language tag="de-DE">de-DE/de-DE.mod_wl_livedata_module.ini</language>
         <language tag="de-DE">de-DE/de-DE.mod_wl_livedata_module.sys.ini</language>
