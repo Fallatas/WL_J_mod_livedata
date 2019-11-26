@@ -14,14 +14,29 @@ require_once __DIR__ . '/helper.php';   // Helper
 
 JHTML::_('script', 'mod_wl_livedata_module/scripts.js', array('version' => 'auto', 'relative' => true));
 
+
+
     $data = ModWL_Livedata_Module_Helper::getLivedataParams ($params);
+
+    $datasets = ModWL_Livedata_Module_Helper::CreateNewDataSets ($params);
     $allusers = ModWL_Livedata_Module_Helper::getUsers();
     $articles = ModWL_Livedata_Module_Helper::getArticles();
     $style = ModWL_Livedata_Module_Helper::getStyleParams();
     $count = ModWL_Livedata_Module_Helper::getOnlineCount();
-    $chartJs =  ModWL_Livedata_Module_Helper::chartJs($count);
-    $save =  ModWL_Livedata_Module_Helper::saveData();
+    /* Single Data */
+    $testi = ModWL_Livedata_Module_Helper::test ($data);
+    $chartJs =  ModWL_Livedata_Module_Helper::chartJs($count,$data,$datasets,$testi);
 
+    if($data->userdisplay === true){
+        // Get a handle to the Joomla! application object
+        $application = JFactory::getApplication();
+
+// Add a message to the message queue
+        $application->enqueueMessage(JText::_('SOME_ERROR_OCCURRED'), 'error');
+
+        /** Alternatively you may use chaining */
+        JFactory::getApplication()->enqueueMessage(JText::_('SOME_ERROR_OCCURRED'), 'error');
+    }
 
 	// Check for a custom CSS file
     JHtml::_('stylesheet', 'mod_wl_livedata_module/user.css', array('version' => 'auto', 'relative' => true));

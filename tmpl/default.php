@@ -15,6 +15,14 @@ JHtml::_('script', 'mod_wl_livedata_module/scripts.js', array('version' => 'auto
 JHtml::_('jQuery.Framework');
 ?>
 
-<div style="width: 100%">
-    <canvas id="myChart" width="600px" height="600"></canvas>
+<?php
+/*
+echo "<pre>";
+print_r($params);
+echo "</pre>";
+*/
+?>
+<div style="width:<?php echo $data->chartsize . '%'; ?>">
+    <canvas id="myChart" width="<?php echo $data->chartwidth . 'px'; ?>" height="<?php echo $data->chartheight . 'px'; ?>"></canvas>
+    <?php echo $data->userdisplay;  ?>
 </div>

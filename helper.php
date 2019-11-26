@@ -28,8 +28,8 @@ class ModWL_Livedata_Module_Helper
         //Create Query
         $query = $db
             ->getQuery(true)
-            ->select("name")
-            ->from($db->quoteName('#__users'));
+            ->select($db->qn("name"))
+            ->from($db->qn('#__users'));
 
         $db->setQuery($query);
         $column = $db->loadColumn ();
@@ -64,7 +64,7 @@ class ModWL_Livedata_Module_Helper
         $whereCondition = JFactory::getConfig()->get('shared_session', '0') ? 'IS NULL' : '= 0';
 
         $query = $db->getQuery(true)
-            ->select('guest, client_id')
+            ->select($db->qn(array('guest', 'client_id')))
             ->from('#__session')
             ->where('client_id ' . $whereCondition);
         $db->setQuery($query);
@@ -129,16 +129,44 @@ class ModWL_Livedata_Module_Helper
 
     }
 
-    public function saveData(){
+    /**
+     * CreateNewDataSets
+     *
+     * @param $params  array  The params attributes
+     * @return string  dataset of params
+     */
+    public function CreateNewDataSets($params){
+
+        $fields = $params->get('fields');
+
+        $dataset ='';
+
+        foreach ($fields as $field)
+        {
+            $dataset .= "{label:'$field->labeltext',backgroundColor:'$field->labeltextcolor',data:[$field->properties]},";
+        }
+
+        return $dataset;
 
     }
 
+    /* Single Data */
+    public function test ($data)
+    {
+        $aaa = $data->fields;
+
+        foreach ($aaa as $testi)
+        {
+           $newTest = $testi->properties;
+        }
+        return $newTest;
+    }
 
     public function getLivedataParams ($params)
     {
         /// Add Module Parameter
         jimport( 'joomla.application.module.helper' );
-        $module = JModuleHelper::getModule('wl_typed_module');
+        $module = JModuleHelper::getModule('wl_livedata_module');
         $module_id = $module->id;
         $db = JFactory::getDbo();
         $query = $db->getQuery(true);
@@ -151,7 +179,7 @@ class ModWL_Livedata_Module_Helper
     }
 
     // Create Chart.js Object
-    public function chartJs($count)
+    public function chartJs($count,$data,$dataset,$testi)
     {
 
         // Add JS Parameter
@@ -162,16 +190,13 @@ class ModWL_Livedata_Module_Helper
 
               var chartData = {
 
-                type: `bar`,
-        data: {
-        labels: [],
-        datasets: [
-            {
-                label: \"Online\",
-                backgroundColor: `rgba(255, 110, 72, 1)`,
-                data: []
-            }
-        ]
+                type: `$data->type`,
+       data: {
+        labels: ['January','February','March','April','May','June','July'],
+
+        datasets: [$dataset]
+
+
     },
     options: {
         title: {
@@ -203,7 +228,7 @@ class ModWL_Livedata_Module_Helper
 
 
     };
-
+console.log(myChartObject);
 var onlineCount = $count;
 var dataCount = 20;
 
